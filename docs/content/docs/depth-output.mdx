@@ -9,10 +9,14 @@ The [`CameraDepthFrameOutput`](/api/react-native-vision-camera/hybrid-objects/Ca
 
 ### Device Support
 
-Depth capture requires dedicated hardware. Before adding a depth output, confirm that the selected device supports it by checking [`CameraDevice.mediaTypes`](/api/react-native-vision-camera/hybrid-objects/CameraDevice#mediatypes):
+Depth capture requires dedicated hardware. Before adding a depth output, confirm that the selected device supports it using the [`supportsDepthCapture`](/api/react-native-vision-camera/functions/supportsDepthCapture) helper (or by checking [`CameraDevice.mediaTypes`](/api/react-native-vision-camera/hybrid-objects/CameraDevice#mediatypes) directly):
 
 ```ts
-const supportsDepth = device.mediaTypes.includes('depth')
+import { supportsDepthCapture } from 'react-native-vision-camera'
+
+if (supportsDepthCapture(device)) {
+  console.log('This device can stream depth frames!')
+}
 ```
 
 You can also select a depth-capable device directly via [`getCameraDevice`](/api/react-native-vision-camera/functions/getCameraDevice):

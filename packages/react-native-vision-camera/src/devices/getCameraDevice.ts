@@ -60,6 +60,28 @@ export interface DeviceFilter {
 }
 
 /**
+ * Returns whether the given {@linkcode CameraDevice} supports depth data capture.
+ *
+ * This is a convenience helper equivalent to `device.mediaTypes.includes('depth')`.
+ *
+ * On iOS, depth-capable devices include back LiDAR cameras (iPhone 12 Pro+) and
+ * front TrueDepth cameras (Face ID iPhones).
+ * On Android, depth-capable devices include Time-of-Flight (ToF) sensors.
+ *
+ * @param device The {@linkcode CameraDevice} to check.
+ * @returns `true` if the device supports depth capture, `false` otherwise.
+ * @example
+ * ```ts
+ * if (supportsDepthCapture(device)) {
+ *   console.log('This device can stream depth frames!')
+ * }
+ * ```
+ */
+export function supportsDepthCapture(device: CameraDevice): boolean {
+  return device.mediaTypes.includes('depth')
+}
+
+/**
  * Get the best matching Camera device that best satisfies your requirements using a sorting filter,
  * or `undefined` if not Cameras are available on this platform.
  *
@@ -85,9 +107,7 @@ export function getCameraDevice(
     .filter((d) => {
       if (d.position !== position) return false
       // Hard requirement: depth capture support
-      if (filter.requiresDepthCapture === true) {
-        if (!d.mediaTypes.includes('depth')) return false
-      }
+      if (filter.requiresDepthCapture === true && !supportsDepthCapture(d)) return false
       return true
     })
     .reduce<CameraDevice | undefined>((prev, curr) => {
