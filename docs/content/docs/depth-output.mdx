@@ -7,6 +7,30 @@ import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
 
 The [`CameraDepthFrameOutput`](/api/react-native-vision-camera/hybrid-objects/CameraDepthFrameOutput) allows streaming [`Depth`](/api/react-native-vision-camera/hybrid-objects/Depth) frames in realtime, making them accessible via a JS worklet function.
 
+### Device Support
+
+Depth capture requires dedicated hardware. Before adding a depth output, confirm that the selected device supports it by checking [`CameraDevice.mediaTypes`](/api/react-native-vision-camera/hybrid-objects/CameraDevice#mediatypes):
+
+```ts
+const supportsDepth = device.mediaTypes.includes('depth')
+```
+
+You can also select a depth-capable device directly via [`getCameraDevice`](/api/react-native-vision-camera/functions/getCameraDevice):
+
+```ts
+const device = getCameraDevice(devices, 'back', {
+  requiresDepthCapture: true,
+})
+if (device == null) {
+  console.warn('No depth-capable back camera found on this device!')
+}
+```
+
+> [!NOTE]
+> **iOS**: Depth is available on back LiDAR cameras (iPhone 12 Pro and newer) and front TrueDepth cameras (Face ID iPhones).
+> **Android**: Depth is available on devices with a Time-of-Flight (ToF) sensor.
+> Devices that lack dedicated depth hardware will not expose `'depth'` in `mediaTypes` and attempting to add a `CameraDepthFrameOutput` to such a device will result in a runtime error.
+
 ### Creating a Depth Frame Output
 
 <Tabs items={["<Camera /> (view)", "useCamera(...) (hook)", "CameraSession (imperative)"]} groupId="api-style" persist>

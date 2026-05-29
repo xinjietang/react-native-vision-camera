@@ -16,6 +16,7 @@ import { CameraSelectorButton } from '../components/CameraSelectorButton'
 import { CameraView } from '../components/CameraView'
 import { CaptureButton } from '../components/CaptureButton'
 import { FullOverlay } from '../components/FullOverlay'
+import { IconButton } from '../components/IconButton'
 import { Row } from '../components/Row'
 import { useIsActive } from '../hooks/useIsActive'
 import { useSafeAreaPadding } from '../hooks/useSafeAreaPadding'
@@ -232,7 +233,10 @@ export function CameraScreen() {
       <CameraView
         isActive={isAppActive && isScreenFocused}
         device={device}
-        outputs={[photoOutput]}
+        outputs={[
+          photoOutput,
+          ...(enableDepthStream ? [depthOutput] : []),
+        ]}
         mirrorMode={device.position === 'front' ? 'on' : 'off'}
         constraints={
           [
@@ -259,6 +263,10 @@ export function CameraScreen() {
         <View style={styles.flex} />
 
         <View style={styles.captureButtonRow}>
+          <IconButton
+            iconName={enableDepthStream ? 'cube' : 'cube-outline'}
+            onPress={() => setEnableDepthStream((e) => !e)}
+          />
           <CaptureButton
             takePhoto={takePhoto}
             startRecording={startRecording}
@@ -293,5 +301,7 @@ const styles = StyleSheet.create({
   captureButtonRow: {
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
+    gap: 20,
   },
 })
